@@ -45,7 +45,7 @@ async function run() {
     for (const [category, urls] of Object.entries(icons)) {
         for (let i = 0; i < urls.length; i++) {
             counts[category]++;
-            const dest = `/Users/billt/Sites/Samsara-Looper/assets/svg_options/${category}_${counts[category]}.svg`;
+            const dest = `/Users/billt/Sites/Sangha-Looper/assets/svg_options/${category}_${counts[category]}.svg`;
             console.log(`Downloading ${dest}...`);
             try {
                 await download(urls[i], dest);

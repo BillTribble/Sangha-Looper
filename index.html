@@ -3,991 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Samsara Looper — Multiplayer Looping Workstation</title>
+    <title>Sangha Looper — Multiplayer Looping Workstation</title>
     <meta name="description" content="A multiplayer looper for musicians. Built for live performance.">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/samsara-logo.png">
+    <link rel="icon" type="image/png" href="assets/sangha-logo.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            color-scheme: dark;
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: rgba(255, 255, 255, 0.03);
-            --bg-card-hover: rgba(255, 255, 255, 0.06);
-            --border-subtle: rgba(255, 255, 255, 0.06);
-            --border-glow: var(--active-accent-border-glow);
-            --text-primary: #f0eef5;
-            --text-secondary: #8a8599;
-            --text-muted: #5a5570;
-            --code-bg: rgba(0, 0, 0, 0.4);
-            --code-text: #f0eef5;
-            
-            /* Active Theme Variables - Initial App Teal */
-            --active-accent: #57DEE3;
-            --btn-primary-text: #0a0a0f;
-            --active-accent-glow: rgba(87, 222, 227, 0.25);
-            --active-accent-glow-hover: rgba(87, 222, 227, 0.35);
-            --active-accent-bg-subtle: rgba(87, 222, 227, 0.12);
-            --active-accent-bg-subtle-hover: rgba(87, 222, 227, 0.2);
-            --active-accent-border-subtle: rgba(87, 222, 227, 0.2);
-            --active-accent-border-glow: rgba(87, 222, 227, 0.25);
-            
-            --active-accent-orb-1: rgba(87, 222, 227, 0.15);
-            --active-accent-orb-2: rgba(87, 222, 227, 0.10);
-            --active-accent-orb-3: rgba(87, 222, 227, 0.08);
-            
-            --active-accent-card-start: rgba(87, 222, 227, 0.08);
-            --active-accent-card-end: rgba(87, 222, 227, 0.02);
-
-            --gradient-card: linear-gradient(135deg, var(--active-accent-card-start), var(--active-accent-card-end));
-            --shadow-glow: 0 0 60px rgba(87, 222, 227, 0.08);
-            --radius-sm: 8px;
-            --radius-md: 14px;
-            --radius-lg: 20px;
-            --radius-xl: 28px;
-        }
-
-        /* Light Mode Disabled for now
-        @media (prefers-color-scheme: light) {
-            :root {
-                --bg-primary: #f5f5f7;
-                --bg-secondary: #ffffff;
-                --bg-card: rgba(0, 0, 0, 0.02);
-                --bg-card-hover: rgba(0, 0, 0, 0.04);
-                --border-subtle: rgba(0, 0, 0, 0.08);
-                --text-primary: #1d1d1f;
-                --text-secondary: #515154;
-                --text-muted: #86868b;
-                --code-bg: rgba(0, 0, 0, 0.05);
-                --code-text: #1d1d1f;
-                --active-accent: #008489;
-                --btn-primary-text: #ffffff;
-                --active-accent-glow: rgba(0, 132, 137, 0.25);
-                --active-accent-glow-hover: rgba(0, 132, 137, 0.35);
-                --active-accent-bg-subtle: rgba(0, 132, 137, 0.12);
-                --active-accent-bg-subtle-hover: rgba(0, 132, 137, 0.2);
-                --active-accent-border-subtle: rgba(0, 132, 137, 0.2);
-                --active-accent-border-glow: rgba(0, 132, 137, 0.25);
-                --active-accent-orb-1: rgba(0, 132, 137, 0.15);
-                --active-accent-orb-2: rgba(0, 132, 137, 0.10);
-                --active-accent-orb-3: rgba(0, 132, 137, 0.08);
-                --active-accent-card-start: rgba(0, 132, 137, 0.08);
-                --active-accent-card-end: rgba(0, 132, 137, 0.02);
-                --shadow-glow: 0 20px 40px rgba(0, 0, 0, 0.05);
-            }
-        }
-        */
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* --- Background Effects --- */
-        .bg-gradient-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.4;
-            pointer-events: none;
-            z-index: 0;
-            transition: background 0.6s ease;
-        }
-
-        .orb-1 {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--active-accent-orb-1), transparent 70%);
-            top: -200px;
-            right: -100px;
-        }
-
-        .orb-2 {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, var(--active-accent-orb-2), transparent 70%);
-            bottom: 10%;
-            left: -150px;
-        }
-
-        .orb-3 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, var(--active-accent-orb-3), transparent 70%);
-            top: 50%;
-            right: -100px;
-        }
-
-        /* --- Layout --- */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 40px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* --- Navigation --- */
-        .nav {
-            padding: 20px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--text-primary);
-        }
-
-        .nav-brand-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-        }
-
-        .nav-brand-text {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            font-size: 1.2rem;
-            letter-spacing: -0.02em;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 8px;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
-            transition: all 0.2s ease;
-        }
-
-        .nav-link:hover {
-            color: var(--text-primary);
-            background: var(--bg-card-hover);
-        }
-
-        .nav-link--cta {
-            background: var(--active-accent-bg-subtle);
-            color: var(--active-accent);
-            border: 1px solid var(--active-accent-border-subtle);
-            transition: all 0.25s ease;
-        }
-
-        .nav-link--cta:hover {
-            background: var(--active-accent-bg-subtle-hover);
-            color: var(--active-accent);
-        }
-
-        /* --- Hero --- */
-        .hero {
-            padding: 20px 0 80px;
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 60px;
-            align-items: center;
-            text-align: left;
-        }
-
-        .hero-content {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .hero-logo {
-            width: 320px;
-            max-width: 100%;
-            height: auto;
-            aspect-ratio: 1;
-            border-radius: 22.5%;
-            display: block;
-            margin: 0 0 32px;
-            filter: drop-shadow(0 0 80px rgba(168, 130, 255, 0.25));
-        }
-
-        @keyframes spin-slow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .hero h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: clamp(2.2rem, 5vw, 3.8rem);
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            cursor: pointer;
-            user-select: none;
-            transition: transform 0.2s ease;
-        }
-
-        .hero h1:hover {
-            transform: scale(1.02);
-        }
-
-        .hero h1 .gradient-text {
-            color: var(--active-accent);
-            background: none;
-            -webkit-text-fill-color: initial;
-            background-clip: initial;
-            transition: color 0.4s ease;
-        }
-
-        .hero-subtitle {
-            font-size: 1.15rem;
-            color: var(--text-secondary);
-            max-width: 520px;
-            margin: 0 0 40px;
-            line-height: 1.7;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 14px;
-            justify-content: flex-start;
-            flex-wrap: wrap;
-        }
-
-        .hero-video-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .hero-video {
-            position: relative;
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            border: 1px solid var(--border-subtle);
-            box-shadow: var(--shadow-glow);
-            background: var(--bg-card);
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .hero-video:hover {
-            transform: translateY(-5px);
-            border-color: var(--border-glow);
-        }
-
-        .hero-video video {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: inherit;
-        }
-
-        @media (min-width: 901px) {
-            .hero-video-container {
-                justify-self: end;
-                max-height: 85vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-            }
-            .hero-video {
-                max-height: 75vh;
-                display: flex;
-                width: fit-content;
-            }
-            .hero-video video {
-                max-height: 75vh;
-                width: auto;
-                object-fit: contain;
-            }
-        }
-
-        .video-caption {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 12px;
-            text-align: left;
-        }
-
-        .video-caption a {
-            color: var(--active-accent);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .video-caption a:hover {
-            color: var(--text-primary);
-            text-decoration: underline;
-        }
-
-
-        .video-controls {
-            position: absolute;
-            bottom: 16px;
-            right: 16px;
-            z-index: 10;
-        }
-
-        .video-control-btn {
-            background: rgba(10, 10, 15, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            padding: 8px 14px;
-            border-radius: var(--radius-sm);
-            font-size: 0.82rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .video-control-btn:hover {
-            background: rgba(10, 10, 15, 0.8);
-            border-color: var(--active-accent);
-            transform: scale(1.02);
-        }
-
-
-        .diagram-placeholder {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            aspect-ratio: auto !important;
-        }
-
-        .diagram-placeholder img {
-            width: 100%;
-            height: auto;
-            display: block;
-            position: relative;
-            z-index: 2;
-            padding: 0;
-        }
-
-
-        /* --- Buttons --- */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 28px;
-            border-radius: var(--radius-md);
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            border: none;
-            font-family: inherit;
-        }
-
-        .btn-primary {
-            background: var(--active-accent);
-            color: var(--btn-primary-text, #0a0a0f);
-            box-shadow: 0 4px 20px var(--active-accent-glow);
-            transition: all 0.25s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--active-accent-glow-hover);
-        }
-
-        .btn-secondary {
-            background: var(--bg-card);
-            color: var(--text-primary);
-            border: 1px solid var(--border-subtle);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-glow);
-            transform: translateY(-2px);
-        }
-
-        .btn-icon {
-            font-size: 1.1rem;
-        }
-
-        /* --- Features --- */
-        .features {
-            padding: 120px 0 160px;
-            display: flex;
-            flex-direction: column;
-            gap: 160px;
-        }
-
-        .feature-row {
-            display: flex;
-            align-items: center;
-            gap: 120px;
-        }
-
-        .feature-row.reverse {
-            flex-direction: row-reverse;
-        }
-
-        .feature-media-placeholder {
-            flex: 1.4;
-            aspect-ratio: 16 / 10;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-xl);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            .feature-media-placeholder {
-                box-shadow: var(--shadow-glow);
-            }
-        }
-
-        .feature-media-placeholder::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.1));
-            z-index: 1;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            .feature-media-placeholder::after {
-                background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.3));
-            }
-        }
-
-        .feature-media-icon {
-            font-size: 4rem;
-            opacity: 0.15;
-            z-index: 0;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .feature-row:hover .feature-media-icon {
-            transform: scale(1.1);
-        }
-        
-        .feature-row:hover .feature-media-placeholder {
-            transform: translateY(-5px);
-            border-color: var(--border-glow);
-        }
-
-        .feature-content {
-            flex: 1;
-            padding: 20px 0;
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 24px;
-            display: inline-block;
-        }
-
-        .feature-title {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            font-size: 3.2rem;
-            letter-spacing: -0.03em;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-        }
-
-        .feature-desc {
-            color: var(--text-secondary);
-            font-size: 1.35rem;
-            line-height: 1.6;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 32px;
-        }
-
-        .feature-card {
-            background: var(--gradient-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 40px;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            text-align: left;
-        }
-
-        .feature-card:hover {
-            border-color: var(--border-glow);
-            box-shadow: var(--shadow-glow);
-            transform: translateY(-5px);
-        }
-
-        .feature-card .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            display: inline-block;
-        }
-
-        .feature-card-title {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            font-size: 1.5rem;
-            letter-spacing: -0.01em;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-
-        .feature-card-desc {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            line-height: 1.6;
-        }
-
-        /* Scroll Reveal Utility */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- Info Panel --- */
-        .info-panel {
-            background: var(--gradient-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            margin: 0 auto 32px;
-            max-width: 640px;
-            text-align: left;
-        }
-        .info-panel h3 {
-            color: var(--text-primary);
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .info-panel p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
-        .info-panel p:last-child {
-            margin-bottom: 0;
-        }
-        .info-panel ol {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin: 12px 0 16px 24px;
-        }
-        .info-panel li {
-            margin-bottom: 8px;
-        }
-        .info-panel strong {
-            color: var(--text-primary);
-        }
-        .info-panel code {
-            background: var(--code-bg);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-size: 0.85rem;
-            color: var(--code-text);
-            border: 1px solid rgba(128, 128, 128, 0.1);
-            display: inline-block;
-            margin-top: 6px;
-        }
-
-        /* --- Downloads --- */
-        .downloads {
-            padding: 80px 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .section-label {
-            font-size: 0.78rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--active-accent);
-            margin-bottom: 12px;
-            transition: color 0.4s ease;
-        }
-
-        .section-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: clamp(1.8rem, 4vw, 2.4rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-
-        .download-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            max-width: 640px;
-            margin: 0 auto;
-        }
-
-        .download-card {
-            background: var(--gradient-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .download-card:hover {
-            border-color: var(--border-glow);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .download-icon {
-            font-size: 2.5rem;
-            margin-bottom: 16px;
-        }
-
-        .download-title {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            font-size: 1.15rem;
-            margin-bottom: 6px;
-        }
-
-        .download-desc {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
-
-        .download-version {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            margin-top: 12px;
-        }
-
-        .download-btn {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .download-btn--disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        /* --- Feedback --- */
-        .feedback {
-            padding: 80px 0;
-        }
-
-        .feedback-card {
-            background: var(--gradient-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-xl);
-            padding: 56px 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feedback-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: var(--radius-xl);
-            padding: 1px;
-            background: linear-gradient(135deg, rgba(168, 130, 255, 0.15), transparent 50%, rgba(110, 193, 255, 0.1));
-            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-            mask-composite: exclude;
-            -webkit-mask-composite: xor;
-            pointer-events: none;
-        }
-
-        .feedback-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .feedback-desc {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            max-width: 440px;
-            margin: 0 auto 28px;
-            line-height: 1.7;
-        }
-
-        .feedback-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        /* --- Footer --- */
-        .footer {
-            padding: 40px 0;
-            border-top: 1px solid var(--border-subtle);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .footer-text {
-            color: var(--text-muted);
-            font-size: 0.82rem;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-link {
-            color: var(--text-muted);
-            font-size: 0.82rem;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .footer-link:hover {
-            color: var(--text-secondary);
-        }
-
-        /* --- Status Badge --- */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 24px;
-        }
-
-        .status-badge--available {
-            background: rgba(107, 223, 184, 0.1);
-            color: var(--accent-green);
-            border: 1px solid rgba(107, 223, 184, 0.2);
-        }
-
-        .status-badge--soon {
-            background: rgba(255, 184, 108, 0.1);
-            color: var(--accent-warm);
-            border: 1px solid rgba(255, 184, 108, 0.2);
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .status-dot--green {
-            background: var(--accent-green);
-        }
-
-        .status-dot--amber {
-            background: var(--accent-warm);
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        /* --- Platform badge --- */
-        .platform-info {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            margin-top: 24px;
-            flex-wrap: wrap;
-        }
-
-        .platform-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.78rem;
-            color: var(--text-muted);
-        }
-
-        /* --- Author Credit --- */
-        .author-credit {
-            padding: 80px 0 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .author-credit-content {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            padding: 16px 32px;
-            border-radius: 100px;
-            backdrop-filter: blur(10px);
-        }
-
-        .author-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--active-accent);
-        }
-
-        .author-credit-content a {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s ease;
-        }
-
-        .author-credit-content a:hover {
-            color: var(--active-accent);
-        }
-
-        .heart-icon {
-            display: inline-block;
-            width: 1.2em;
-            height: 1.2em;
-            vertical-align: -0.25em;
-            color: #ff4a5a;
-            margin: 0 4px;
-            animation: heartbeat 1.5s infinite;
-        }
-
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.1); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.1); }
-            70% { transform: scale(1); }
-        }
-
-        /* --- Responsive --- */
-        @media (max-width: 900px) {
-            .container {
-                padding: 0 24px;
-            }
-            .hero {
-                grid-template-columns: 1fr;
-                gap: 40px;
-                padding: 60px 0 50px;
-            }
-            .hero-content {
-                align-items: center;
-                text-align: center;
-            }
-            .hero-actions {
-                justify-content: center;
-            }
-
-            .video-caption {
-                text-align: center;
-            }
-            .feature-row, .feature-row.reverse {
-                flex-direction: column;
-                gap: 40px;
-                align-items: stretch;
-            }
-            .feature-content {
-                padding: 0;
-            }
-            .feature-grid {
-                gap: 20px;
-            }
-            .feature-card {
-                padding: 32px;
-            }
-            .feature-media-placeholder {
-                width: 100%;
-            }
-            .feature-title {
-                font-size: 1.8rem;
-            }
-            .diagram-placeholder {
-                aspect-ratio: auto !important;
-                height: auto !important;
-            }
-            .diagram-placeholder img {
-                padding: 0 !important;
-                height: auto !important;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .download-cards { grid-template-columns: 1fr; }
-            .feedback-card { padding: 40px 24px; }
-            .nav-links { display: none; }
-            .footer { flex-direction: column; text-align: center; }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400..700&family=Inter:wght@300;400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
 
@@ -1000,8 +26,8 @@
         <!-- Nav -->
         <nav class="nav" id="nav">
             <a href="#" class="nav-brand">
-                <img src="assets/samsara-logo.png" alt="Samsara" class="nav-brand-icon">
-                <span class="nav-brand-text">Samsara</span>
+                <img src="assets/sangha-logo.png" alt="Sangha" class="nav-brand-icon">
+                <span class="nav-brand-text">Sangha</span>
             </a>
             <div class="nav-links">
                 <a href="#feedback" class="nav-link nav-link--cta">Feedback</a>
@@ -1011,16 +37,16 @@
         <!-- Hero -->
         <section class="hero" id="hero">
             <div class="hero-content">
-                <img src="assets/samsara-logo.png" alt="Samsara Looper" class="hero-logo">
+                <img src="assets/sangha-logo.png" alt="Sangha Looper" class="hero-logo">
                 <h1>
-                    <span class="gradient-text">Samsara&nbsp;Looper</span>
+                    <span class="gradient-text">Sangha&nbsp;Looper</span>
                 </h1>
                 <p class="hero-subtitle">
                     A multiplayer looper for musicians. Built for live&nbsp;performance.
                 </p>
                 <div class="hero-actions">
                     <a href="#downloads" class="btn btn-primary">
-                        <span class="btn-icon">↓</span>
+                        <span class="btn-icon material-symbols-outlined">download</span>
                         Download for&nbsp;macOS
                     </a>
                 </div>
@@ -1033,7 +59,7 @@
                     </video>
                     <div class="video-controls">
                         <button id="unmute-btn" class="video-control-btn">
-                            <span class="video-control-icon">🔇</span>
+                            <span class="video-control-icon material-symbols-outlined">volume_off</span>
                             <span class="video-control-label">Unmute</span>
                         </button>
                     </div>
@@ -1048,7 +74,7 @@
         <section class="features" id="features">
             <div class="feature-row reveal">
                 <div class="feature-content">
-                    <span class="feature-icon">📱</span>
+                    <span class="feature-icon material-symbols-outlined">devices</span>
                     <h3 class="feature-title">Multiplayer&nbsp;control</h3>
                     <p class="feature-desc">One looper device, many remote controls. Connect from any phone or tablet on your&nbsp;Wi-Fi.</p>
                 </div>
@@ -1057,31 +83,31 @@
                 </div>
             </div>
 
-            <div class="reveal" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: var(--radius-xl); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-glow); background: var(--bg-card); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='var(--border-glow)'" onmouseout="this.style.transform='none'; this.style.borderColor='var(--border-subtle)'">
-                <iframe src="https://www.youtube.com/embed/ejbYN4Lfiks" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen title="Multiplayer Control Demo"></iframe>
+            <div class="video-embed-card reveal">
+                <iframe src="https://www.youtube.com/embed/ejbYN4Lfiks" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen title="Multiplayer Control Demo"></iframe>
             </div>
 
             <div class="feature-grid">
                 <div class="feature-card reveal">
-                    <span class="feature-icon">🎛️</span>
+                    <span class="feature-icon material-symbols-outlined">tune</span>
                     <h3 class="feature-card-title">Re-loop through&nbsp;FX</h3>
                     <p class="feature-card-desc">Instantly re-loop your audio through effects chains. Layer and transform on the&nbsp;fly with a built-in suite of dynamic effects that stay in perfect sync with your&nbsp;jam.</p>
                 </div>
 
                 <div class="feature-card reveal">
-                    <span class="feature-icon">↩️</span>
+                    <span class="feature-icon material-symbols-outlined">replay</span>
                     <h3 class="feature-card-title">Retrospective&nbsp;looping</h3>
-                    <p class="feature-card-desc">Loop what you just played. Samsara is always listening — capture the magic whenever you&nbsp;like.</p>
+                    <p class="feature-card-desc">Loop what you just played. Sangha is always listening — capture the magic whenever you&nbsp;like.</p>
                 </div>
 
                 <div class="feature-card reveal">
-                    <span class="feature-icon">⏱️</span>
+                    <span class="feature-icon material-symbols-outlined">timer</span>
                     <h3 class="feature-card-title">First loop&nbsp;BPM</h3>
                     <p class="feature-card-desc">Set your tempo instantly from your first loop. No click tracks needed — just play and&nbsp;go.</p>
                 </div>
 
                 <div class="feature-card reveal">
-                    <span class="feature-icon" style="display: inline-flex; width: 32px; height: 32px; vertical-align: middle;">
+                    <span class="feature-icon" style="display: inline-flex; width: 32px; height: 32px; vertical-align: middle; color: var(--active-accent);">
                         <svg fill="currentColor" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><path d="M0 6.4v11.2h1.6V6.4zm3.2 0v11.2h1.6V6.4zm3.2 0v11.2H8V6.4zm3.2 0v11.2h1.6V6.4zm3.2 0V8H24V6.4zm0 3.2v1.6H24V9.6zm0 3.2v1.6H24v-1.6zm0 3.2v1.6H24V16z"/></svg>
                     </span>
                     <h3 class="feature-card-title">Ableton&nbsp;Link</h3>
@@ -1089,9 +115,9 @@
                 </div>
 
                 <div class="feature-card reveal">
-                    <span class="feature-icon">🎚️</span>
+                    <span class="feature-icon material-symbols-outlined">equalizer</span>
                     <h3 class="feature-card-title">Standalone &amp;&nbsp;VST3</h3>
-                    <p class="feature-card-desc">Run as a standalone macOS app or drop the VST3 plugin straight into your&nbsp;DAW. Whether you're playing live on stage or producing in the studio, Samsara adapts to your&nbsp;workflow.</p>
+                    <p class="feature-card-desc">Run as a standalone macOS app or drop the VST3 plugin straight into your&nbsp;DAW. Whether you're playing live on stage or producing in the studio, Sangha adapts to your&nbsp;workflow.</p>
                 </div>
             </div>
         </section>
@@ -1099,8 +125,8 @@
         <!-- Downloads -->
         <section class="downloads" id="downloads">
             <div class="section-header">
-                <p class="section-label">📥 Downloads</p>
-                <h2 class="section-title">Get&nbsp;Samsara</h2>
+                <p class="section-label"><span class="material-symbols-outlined section-label-icon">download</span>Downloads</p>
+                <h2 class="section-title">Get&nbsp;Sangha</h2>
             </div>
 
             <div id="release-status" style="text-align: center; margin-bottom: 24px;">
@@ -1111,15 +137,15 @@
             </div>
 
             <div class="info-panel">
-                <h3>⚠️ Note for macOS&nbsp;users</h3>
-                <p>Because Samsara is an experimental developer app, it is currently "unsigned." This means your Mac's built-in security will block the app from&nbsp;opening.</p>
+                <h3><span class="material-symbols-outlined info-panel-icon">warning</span>Note for macOS&nbsp;users</h3>
+                <p>Because Sangha is an experimental developer app, it is currently "unsigned." This means your Mac's built-in security will block the app from&nbsp;opening.</p>
                 <p>Use this quick Terminal trick to get things&nbsp;working:</p>
                 <ol>
                     <li>Open the <strong>Terminal</strong> app on your Mac (you can find it using Spotlight&nbsp;search).</li>
                     <li>Type the following command, making sure to leave a single space at the&nbsp;end:<br>
                         <code>xattr -d com.apple.quarantine </code>
                     </li>
-                    <li><strong>Drag and drop</strong> the downloaded Samsara app or <code>.vst3</code> file directly into the Terminal window. This will automatically fill in the correct file path for&nbsp;you.</li>
+                    <li><strong>Drag and drop</strong> the downloaded Sangha app or <code>.vst3</code> file directly into the Terminal window. This will automatically fill in the correct file path for&nbsp;you.</li>
                     <li>Press&nbsp;<strong>Enter</strong>.</li>
                 </ol>
                 <p>You can now open the app or&nbsp;plugin!</p>
@@ -1127,21 +153,21 @@
 
             <div class="download-cards">
                 <div class="download-card">
-                    <div class="download-icon">🖥️</div>
+                    <div class="download-icon"><span class="material-symbols-outlined" style="font-size: 2.5rem;">desktop_mac</span></div>
                     <h3 class="download-title">macOS&nbsp;standalone</h3>
                     <p class="download-desc">Native macOS&nbsp;application</p>
                     <a href="#" id="download-standalone" class="btn btn-primary download-btn download-btn--disabled">
-                        <span class="btn-icon">↓</span>
+                        <span class="btn-icon material-symbols-outlined">download</span>
                         Download&nbsp;.app
                     </a>
                     <p class="download-version" id="standalone-version">No releases&nbsp;yet</p>
                 </div>
                 <div class="download-card">
-                    <div class="download-icon">🎛️</div>
+                    <div class="download-icon"><span class="material-symbols-outlined" style="font-size: 2.5rem;">graphic_eq</span></div>
                     <h3 class="download-title">macOS&nbsp;VST3</h3>
                     <p class="download-desc">Use inside your&nbsp;DAW</p>
                     <a href="#" id="download-vst3" class="btn btn-primary download-btn download-btn--disabled">
-                        <span class="btn-icon">↓</span>
+                        <span class="btn-icon material-symbols-outlined">download</span>
                         Download&nbsp;.vst3
                     </a>
                     <p class="download-version" id="vst3-version">No releases&nbsp;yet</p>
@@ -1149,12 +175,12 @@
             </div>
 
             <div class="platform-info">
-                <span class="platform-tag">🍎 macOS&nbsp;13+</span>
-                <span class="platform-tag">💻 Apple Silicon &amp;&nbsp;Intel</span>
+                <span class="platform-tag"><span class="material-symbols-outlined platform-icon">laptop_mac</span>macOS&nbsp;13+</span>
+                <span class="platform-tag"><span class="material-symbols-outlined platform-icon">memory</span>Apple Silicon &amp;&nbsp;Intel</span>
             </div>
 
-            <div style="text-align: center; margin-top: 32px;" class="reveal">
-                <a href="https://github.com/BillTribble/Samsara-Looper/releases" target="_blank" rel="noopener" style="color: var(--active-accent); font-size: 0.9rem; text-decoration: none; font-weight: 500; transition: opacity 0.2s ease;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">
+            <div class="changelog-container reveal">
+                <a href="https://github.com/BillTribble/Sangha-Looper/releases" target="_blank" rel="noopener" class="changelog-link">
                     View Changelog &rarr;
                 </a>
             </div>
@@ -1163,17 +189,17 @@
         <!-- Feedback -->
         <section class="feedback" id="feedback">
             <div class="feedback-card">
-                <h2 class="feedback-title">💬 We'd love your&nbsp;feedback</h2>
+                <h2 class="feedback-title"><span class="material-symbols-outlined feedback-title-icon">chat</span>We'd love your&nbsp;feedback</h2>
                 <p class="feedback-desc">
                     Found a bug? Have a feature idea? Let me&nbsp;know
                 </p>
                 <div class="feedback-actions">
-                    <a href="https://github.com/BillTribble/Samsara-Looper/issues/new?labels=bug&template=bug_report.md&title=%5BBug%5D+" class="btn btn-secondary" target="_blank" rel="noopener">
-                        <span class="btn-icon">🐛</span>
+                    <a href="https://github.com/BillTribble/Sangha-Looper/issues/new?labels=bug&template=bug_report.md&title=%5BBug%5D+" class="btn btn-secondary" target="_blank" rel="noopener">
+                        <span class="btn-icon material-symbols-outlined">bug_report</span>
                         Report a&nbsp;bug
                     </a>
-                    <a href="https://github.com/BillTribble/Samsara-Looper/issues/new?labels=enhancement&title=%5BFeature%5D+" class="btn btn-secondary" target="_blank" rel="noopener">
-                        <span class="btn-icon">💡</span>
+                    <a href="https://github.com/BillTribble/Sangha-Looper/issues/new?labels=enhancement&title=%5BFeature%5D+" class="btn btn-secondary" target="_blank" rel="noopener">
+                        <span class="btn-icon material-symbols-outlined">lightbulb</span>
                         Request a&nbsp;feature
                     </a>
                 </div>
@@ -1192,225 +218,14 @@
         <footer class="footer">
             <p class="footer-text">© 2026 Actual Vibes Ltd. All rights&nbsp;reserved.</p>
             <div class="footer-links">
-                <a href="https://github.com/BillTribble/Samsara-Looper" class="footer-link" target="_blank" rel="noopener">GitHub</a>
-                <a href="https://github.com/BillTribble/Samsara-Looper/releases" class="footer-link" target="_blank" rel="noopener">Releases</a>
-                <a href="https://github.com/BillTribble/Samsara-Looper/issues" class="footer-link" target="_blank" rel="noopener">Issues</a>
+                <a href="https://github.com/BillTribble/Sangha-Looper" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://github.com/BillTribble/Sangha-Looper/releases" class="footer-link" target="_blank" rel="noopener">Releases</a>
+                <a href="https://github.com/BillTribble/Sangha-Looper/issues" class="footer-link" target="_blank" rel="noopener">Issues</a>
             </div>
         </footer>
 
     </div>
 
-    <script>
-        /**
-         * Fetches the latest release from the GitHub Releases API
-         * and populates the download buttons with real links.
-         */
-        const REPO = 'BillTribble/Samsara-Looper';
-        const API_URL = `https://api.github.com/repos/${REPO}/releases/latest`;
-
-        async function fetchLatestRelease() {
-            const statusEl = document.getElementById('release-status');
-            const standaloneBtn = document.getElementById('download-standalone');
-            const vst3Btn = document.getElementById('download-vst3');
-            const standaloneVersion = document.getElementById('standalone-version');
-            const vst3Version = document.getElementById('vst3-version');
-
-            try {
-                const res = await fetch(API_URL);
-
-                if (res.status === 404) {
-                    statusEl.innerHTML = `
-                        <span class="status-badge status-badge--soon">
-                            <span class="status-dot status-dot--amber"></span>
-                            First release coming&nbsp;soon
-                        </span>`;
-                    return;
-                }
-
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-                const release = await res.json();
-                const assets = release.assets || [];
-                const version = release.tag_name || release.name;
-                const publishedAt = new Date(release.published_at).toLocaleDateString('en-GB', {
-                    day: 'numeric', month: 'short', year: 'numeric'
-                });
-
-                // Find standalone (.app or .zip containing .app)
-                const standaloneAsset = assets.find(a =>
-                    /standalone/i.test(a.name) || /\.app/i.test(a.name)
-                );
-
-                // Find VST3
-                const vst3Asset = assets.find(a =>
-                    /\.vst3/i.test(a.name) || /vst3/i.test(a.name)
-                );
-
-                if (standaloneAsset) {
-                    standaloneBtn.href = standaloneAsset.browser_download_url;
-                    standaloneBtn.classList.remove('download-btn--disabled');
-                    standaloneVersion.textContent = `${version} · ${publishedAt}`;
-                }
-
-                if (vst3Asset) {
-                    vst3Btn.href = vst3Asset.browser_download_url;
-                    vst3Btn.classList.remove('download-btn--disabled');
-                    vst3Version.textContent = `${version} · ${publishedAt}`;
-                }
-
-                const hasAny = standaloneAsset || vst3Asset;
-                statusEl.innerHTML = hasAny
-                    ? `<span class="status-badge status-badge--available">
-                           <span class="status-dot status-dot--green"></span>
-                           ${version}&nbsp;available
-                       </span>`
-                    : `<span class="status-badge status-badge--soon">
-                           <span class="status-dot status-dot--amber"></span>
-                           ${version} — no downloadable assets&nbsp;yet
-                       </span>`;
-
-            } catch (err) {
-                console.warn('Could not fetch release info:', err);
-                statusEl.innerHTML = `
-                    <span class="status-badge status-badge--soon">
-                        <span class="status-dot status-dot--amber"></span>
-                        First release coming&nbsp;soon
-                    </span>`;
-            }
-        }
-
-        // Smooth scroll for nav links
-        document.querySelectorAll('a[href^="#"]').forEach(link => {
-            link.addEventListener('click', e => {
-                const target = document.querySelector(link.getAttribute('href'));
-                if (target) {
-                    e.preventDefault();
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // Fetch releases on load
-        fetchLatestRelease();
-
-        const THEMES = [
-            {
-                name: 'teal',
-                color: '#008489',
-                rgb: '0, 132, 137',
-                darkColor: '#57DEE3',
-                darkRgb: '87, 222, 227',
-                btnText: '#ffffff',
-                darkBtnText: '#0a0a0f'
-            },
-            {
-                name: 'blue',
-                color: '#0066cc',
-                rgb: '0, 102, 204',
-                darkColor: '#6ec1ff',
-                darkRgb: '110, 193, 255',
-                btnText: '#ffffff',
-                darkBtnText: '#0a0a0f'
-            }
-        ];
-
-        let currentThemeIndex = 0;
-
-        function setTheme(theme) {
-            const root = document.documentElement;
-            // Force dark mode for now
-            const isDark = true;
-            
-            const color = isDark ? theme.darkColor : theme.color;
-            const rgb = isDark ? theme.darkRgb : theme.rgb;
-            const btnText = isDark ? theme.darkBtnText : theme.btnText;
-
-            root.style.setProperty('--active-accent', color);
-            root.style.setProperty('--btn-primary-text', btnText);
-            root.style.setProperty('--active-accent-glow', `rgba(${rgb}, 0.25)`);
-            root.style.setProperty('--active-accent-glow-hover', `rgba(${rgb}, 0.35)`);
-            root.style.setProperty('--active-accent-bg-subtle', `rgba(${rgb}, 0.12)`);
-            root.style.setProperty('--active-accent-bg-subtle-hover', `rgba(${rgb}, 0.2)`);
-            root.style.setProperty('--active-accent-border-subtle', `rgba(${rgb}, 0.2)`);
-            root.style.setProperty('--active-accent-border-glow', `rgba(${rgb}, 0.25)`);
-            
-            root.style.setProperty('--active-accent-orb-1', `rgba(${rgb}, 0.15)`);
-            root.style.setProperty('--active-accent-orb-2', `rgba(${rgb}, 0.10)`);
-            root.style.setProperty('--active-accent-orb-3', `rgba(${rgb}, 0.08)`);
-            
-            root.style.setProperty('--active-accent-card-start', `rgba(${rgb}, 0.08)`);
-            root.style.setProperty('--active-accent-card-end', `rgba(${rgb}, 0.02)`);
-            
-            root.style.setProperty('--shadow-glow', isDark ? `0 0 60px rgba(${rgb}, 0.08)` : `0 20px 40px rgba(0, 0, 0, 0.05)`);
-        }
-
-        // Set initial Theme
-        setTheme(THEMES[0]);
-
-        // Handle title click
-        const heroTitle = document.querySelector('.hero h1');
-        if (heroTitle) {
-            heroTitle.addEventListener('click', () => {
-                currentThemeIndex = (currentThemeIndex + 1) % THEMES.length;
-                setTheme(THEMES[currentThemeIndex]);
-            });
-        }
-
-        // Listen for OS theme changes (Disabled to force dark mode)
-        /*
-        if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                setTheme(THEMES[currentThemeIndex]);
-            });
-        }
-        */
-
-        // Intersection Observer for scroll reveal animations
-        const revealObserverOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-
-        const revealObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, revealObserverOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => {
-            revealObserver.observe(el);
-        });
-
-        // Add reveal class to other sections for swish effect
-        document.querySelectorAll('.info-panel, .download-card, .feedback-card').forEach(el => {
-            el.classList.add('reveal');
-            revealObserver.observe(el);
-        });
-
-        // Video mute/unmute control
-        const heroVideo = document.getElementById('hero-vid');
-        const unmuteBtn = document.getElementById('unmute-btn');
-        if (heroVideo && unmuteBtn) {
-            const unmuteIcon = unmuteBtn.querySelector('.video-control-icon');
-            const unmuteLabel = unmuteBtn.querySelector('.video-control-label');
-
-            unmuteBtn.addEventListener('click', () => {
-                if (heroVideo.muted) {
-                    heroVideo.muted = false;
-                    unmuteIcon.textContent = '🔊';
-                    unmuteLabel.textContent = 'Mute';
-                } else {
-                    heroVideo.muted = true;
-                    unmuteIcon.textContent = '🔇';
-                    unmuteLabel.textContent = 'Unmute';
-                }
-            });
-        }
-    </script>
-
+    <script src="js/main.js"></script>
 </body>
 </html>

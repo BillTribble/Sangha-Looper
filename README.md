@@ -1,10 +1,10 @@
-# ☸️ Samsara Looper
+# ☸️ Sangha Looper
 
-[🌐 Website](https://billtribble.github.io/Samsara-Looper/)
+[🌐 Website](https://billtribble.github.io/Sangha-Looper/)
 
 **A multiplayer retrospective looper for musicians. Built for live performance and spontaneous composition.**
 
-Samsara is a real-time audio looper built as a native macOS app with an embedded web UI. It's designed for live performance and studio use, with features including:
+Sangha is a real-time audio looper built as a native macOS app with an embedded web UI. It's designed for live performance and studio use, with features including:
 
 - 🎵 Multi-player retrospective looping
 - 📱 One looper device, many remote controls on phones or tablets
@@ -14,16 +14,16 @@ Samsara is a real-time audio looper built as a native macOS app with an embedded
 
 ## 📥 Downloads
 
-Check the [Releases](https://github.com/BillTribble/Samsara-Looper/releases) page for the latest builds:
+Check the [Releases](https://github.com/BillTribble/Sangha-Looper/releases) page for the latest builds:
 
-- 🖥️ **MacOS Standalone** (.app) — Run Samsara as a standalone macOS application
-- 🎛️ **MacOS VST3** (.vst3) — Use Samsara inside your DAW
+- 🖥️ **MacOS Standalone** (.app) — Run Sangha as a standalone macOS application
+- 🎛️ **MacOS VST3** (.vst3) — Use Sangha inside your DAW
 
 > Requires macOS 13+. Apple Silicon and Intel Macs supported.
 
 ## 🐛 Bug Reports
 
-Found a bug? Please [open an issue](https://github.com/BillTribble/Samsara-Looper/issues/new) with:
+Found a bug? Please [open an issue](https://github.com/BillTribble/Sangha-Looper/issues/new) with:
 
 1. What you were doing when the bug occurred
 2. What you expected to happen
