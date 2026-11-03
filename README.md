@@ -2,7 +2,7 @@
 
 [🌐 Website](https://billtribble.github.io/Sangha-Looper/)
 
-**A multiplayer retrospective looper for musicians. Built for live performance and spontaneous composition.**
+**A multiplayer looper for musicians. Built for live performance.**
 
 Sangha is a real-time audio looper built as a native macOS app with an embedded web UI. It's designed for live performance and studio use, with features including:
 
